@@ -1,5 +1,5 @@
-# React Login Template
-Login and Sign up template made in react.
+# React Transport
+React app for getting a local transport.
 
 ## Start server
 * cd ./server
