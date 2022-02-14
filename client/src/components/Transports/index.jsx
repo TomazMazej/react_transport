@@ -28,7 +28,6 @@ export const Transports = ({ transports, onDelete, onEdit, editedTransport, newF
     
     return (
         <div>
-            <h2>Offered Transports</h2>
             <div className={styles.todos}>
                 {transports.map(transport => (
                     <div key={transport._id}>
@@ -44,8 +43,12 @@ export const Transports = ({ transports, onDelete, onEdit, editedTransport, newF
                                 <div className={styles.text}>{Moment(transport.dateFrom).format('d MMM Y hh:mm')}</div>
                                 <div className={styles.text}>{transport.price}$</div>
                             </section>
-                            <div className={styles.delete_todo} onClick={() => onDelete(transport._id)}>x</div>
-                            <div className={styles.edit_todo} onClick={() => editTransport(transport)}>i</div>
+                            {onDelete ? (
+                                <div>
+                                    <div className={styles.delete_todo} onClick={() => onDelete(transport._id)}>x</div>
+                                    <div className={styles.edit_todo} onClick={() => editTransport(transport)}>i</div>
+                                </div>
+                            ) : ""}
                         </div>
                     </div>
                 ))}

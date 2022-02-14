@@ -18,9 +18,24 @@ app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
 
 // Requests
+const Users = require('./models/user')
+app.get('/users/:e', async (req, res) => {
+    const user = await Users.User.findOne({ email: req.params.e });
+
+    res.json(user);
+})
+
 const Transport = require('./models/transport')
 app.get('/transports', async(req, res) => {
     const transports = await Transport.find();
+
+    res.json(transports);
+})
+
+app.get('/userTransports/:e', async(req, res) => {
+    const transports = await Transport.find({ owner: req.params.e });
+    console.log(req.params.e)
+    console.log(transports)
 
     res.json(transports);
 })
@@ -37,7 +52,8 @@ app.post('/transport/new', (req, res) => {
         carModel: req.body.carModel,
         carColor: req.body.carColor,
         registration: req.body.registration,
-        interStop: req.body.interStop
+        interStop: req.body.interStop,
+        owner: req.body.owner
     })
 
     transport.save();
@@ -75,6 +91,26 @@ app.get('/transport/:id', async (req, res) => {
     const transport = await Transport.findById(req.params.id);
 
     res.json(transport)
+})
+
+app.get('/checkOfferTransport/:e', async (req, res) => {
+    const user = await Users.User.findOne({ email: req.params.e });
+
+    user.offerTransport = !user.offerTransport;
+
+    user.save();
+
+    res.json(user)
+})
+
+app.get('/checkSearchTransport/:e', async (req, res) => {
+    const user = await Users.User.findOne({ email: req.params.e });
+
+    user.searchTransport = !user.searchTransport;
+
+    user.save();
+
+    res.json(user)
 })
 
 const port = process.env.PORT || 8080;

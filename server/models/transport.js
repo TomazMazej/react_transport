@@ -47,6 +47,10 @@ const transportSchema = new Schema({
     interStop: {
         type: String,
         required: false
+    },
+    owner: {
+        type: String,
+        required: false
     }
 })
 

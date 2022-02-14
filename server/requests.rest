@@ -3,3 +3,8 @@ GET http://localhost:8080/transports
 ###
 
 GET http://localhost:8080/transport/620118c07b0c6791c0a592fb
+
+###
+
+GET http://localhost:8080/userTransports/tomaz.mazej@gmail.com
+
