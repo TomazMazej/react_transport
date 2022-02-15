@@ -53,8 +53,7 @@
     font-size: 28px;
     font-weight: 900;
     color: var(--light);
-    background-color: var(--primary);
-    background-image: linear-gradient(to bottom right, var(--primary), var(--secondary));
+    background-color: #37a8ac;
     cursor: pointer;
 }
 

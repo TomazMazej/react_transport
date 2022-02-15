@@ -103,6 +103,11 @@ export const Transport = ({}) => {
 		setReservations(reservations => reservations.filter(reservation => reservation._id !== data._id));
 	}
 
+    const pickUp = (id) => {
+        const data = fetch("http://localhost:8080/pickUp/" + id).then(res => res.json());
+        window.location.reload(false);
+    };
+
     return (
         <div>
             <nav className={styles.navbar}>
@@ -164,8 +169,14 @@ export const Transport = ({}) => {
                     <div key={r._id}>
                         <div className={styles.todo} value={r._id} >
                             <div className={styles.text}>{r.name} </div>
-                            <button className={styles.accept_btn} onClick={() => acceptReservation(r._id, r.email)}>Accept</button>
-                            <button className={styles.decline_btn} onClick={() => declineReservation(r._id)}>Decline</button>
+                            {r.status === "pending" ? (
+                                <div>
+                                    <button className={styles.accept_btn} onClick={() => acceptReservation(r._id, r.email)}>Accept</button>
+                                    <button className={styles.decline_btn} onClick={() => declineReservation(r._id)}>Decline</button>
+                            </div>
+                            ) : 
+                            <input type="checkbox" checked={r.pickup} onChange={() => pickUp(r._id)}/>
+                            }
                         </div>
                     </div>
                 ))}

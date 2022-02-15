@@ -18,6 +18,10 @@ const reservationSchema = new Schema({
     status: {
         type: String,
         required: false
+    },
+    pickup: {
+        type: Boolean,
+        default: false
     }
 })
 

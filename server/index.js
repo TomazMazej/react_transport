@@ -112,7 +112,7 @@ app.get('/checkSearchTransport/:e', async (req, res) => {
 // Reservation
 const Reservation = require('./models/reservation')
 app.get('/reservations/:tr', async(req, res) => {
-    const reservations = await Reservation.find({$and:[{transportId: req.params.tr}, {status: 'pending'}]});
+    const reservations = await Reservation.find({transportId: req.params.tr});
   
     res.json(reservations);
 })
@@ -159,6 +159,14 @@ app.get('/reservationCancle/:tr/:e', async (req, res) => {
     transport.save();
 
     res.json(transport)
+})
+
+app.get('/pickUp/:id', async (req, res) => {
+    const reservation = await Reservation.findById(req.params.id);
+    reservation.pickup = !reservation.pickup;
+    reservation.save();
+
+    res.json(reservation)
 })
 
 // Notification
