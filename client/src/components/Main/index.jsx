@@ -12,6 +12,8 @@ const Main = () => {
 
 	// Prevozi
 	const [transports, setTransports] = useState([]);
+	const [searchTransports, setSearchTransports] = useState([]);
+
 	const [addTransportActive, setAddTransportActive] = useState(false);
 
 	const [newFrom, setNewFrom] = useState(null);
@@ -25,6 +27,9 @@ const Main = () => {
 	const [newCarColor, setNewCarColor] = useState("");
 	const [newRegistration, setNewRegistration] = useState("");
 	const [newStop, setNewStop] = useState("");
+	const [searchFrom, setSearchFrom] = useState("");
+	const [searchTo, setSearchTo] = useState("");
+	const [searchDate, setSearchDate] = useState(new Date());
 
 	const cities = [
 		{ value: 'Celje', label: 'Celje' },
@@ -39,12 +44,23 @@ const Main = () => {
 
 	useEffect(() => {
 		GetTransports();
-	  }, [])
+	}, [])
+
+	useEffect(() => {
+		GetSearchTransports();
+	}, [])
 
 	const GetTransports = () => {
 		fetch(API_BASE + "/transports")
 		  .then(res => res.json())
 		  .then(data => setTransports(data))
+		  .then(err => console.error("Error: ", err));
+	}
+
+	const GetSearchTransports = () => {
+		fetch(API_BASE + "/transports")
+		  .then(res => res.json())
+		  .then(data => setSearchTransports(data))
 		  .then(err => console.error("Error: ", err));
 	}
 
@@ -84,6 +100,23 @@ const Main = () => {
 		setNewStop("");
 	}
 
+	const search = () => {
+		console.log(searchFrom.value)
+		console.log(searchTo.value)
+		console.log(searchDate.value)
+		let resultArray;
+		if(searchFrom.value !== undefined){
+			resultArray = searchTransports.filter(transport => transport.cityFrom === searchFrom.value);
+		}
+		if(searchTo.value !== undefined){
+			resultArray = searchTransports.filter(transport => transport.cityTo === searchTo.value);
+		}
+		/*if(searchDate !== undefined){
+			resultArray = searchTransports.filter(transport => transport.dateFrom === searchDate);
+		}*/
+		setTransports(resultArray);
+	};
+
 	// Nav
 	const [user, setUser] = useState("");
 
@@ -115,6 +148,11 @@ const Main = () => {
 					Logout
 				</button>
 			</nav>
+			<h1>Search transports</h1>
+			<Select className={styles.add_todo_input} options={cities} defaultValue={searchFrom} onChange={setSearchFrom} value={searchFrom} placeholder="From" isSearchable/>
+			<Select className={styles.add_todo_input} options={cities} defaultValue={searchTo} onChange={setSearchTo} value={searchTo} placeholder="To" isSearchable/>
+			<DatePicker className={styles.add_todo_input} selected={searchDate} onChange={(date) => setSearchDate(date)} dateFormat="dd-mm-yyyy"/>
+			<button className={styles.black_btn} onClick={search}>Search</button>
 
             <h1>Offered Transports</h1>
 			<Transports transports={transports}/>
@@ -128,7 +166,7 @@ const Main = () => {
                 	<h3>Add Transport</h3>
 					<Select className={styles.add_todo_input} options={cities} defaultValue={newFrom} onChange={setNewFrom} value={newFrom} placeholder="From" isSearchable/>
 					<Select className={styles.add_todo_input} options={cities} defaultValue={newTo} onChange={setNewTo} value={newTo} placeholder="To" isSearchable/>
-					<DatePicker className={styles.add_todo_input} selected={newDate} onChange={(date) => setNewDate(date)} dateFormat="dd-mmm-yyyy hh:mm"/>
+					<DatePicker className={styles.add_todo_input} selected={newDate} onChange={(date) => setNewDate(date)} dateFormat="dd-mm-yyyy hh:mm"/>
 					<input 
 						type="text" 
 						className={styles.add_todo_input} 
