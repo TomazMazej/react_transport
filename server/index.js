@@ -161,5 +161,14 @@ app.get('/reservationCancle/:tr/:e', async (req, res) => {
     res.json(transport)
 })
 
+// Notification
+app.get('/notification/:tr', async (req, res) => {
+    const transport = await Transport.findById(req.params.tr);
+    transport.notification = !transport.notification;
+    transport.save();
+
+    res.json(transport)
+})
+
 const port = process.env.PORT || 8080;
 app.listen(port, console.log(`Listening on port ${port}...`));

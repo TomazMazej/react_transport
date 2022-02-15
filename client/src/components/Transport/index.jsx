@@ -5,14 +5,13 @@ import styles from "./styles.module.css";
 
 export const Transport = ({}) => {
 
-    var tr = localStorage.getItem("transportId");
-
     const [transport, setTransport] = useState('');
     const [reservations, setReservations] = useState([]);
     const [reservation, setReservation] = useState("");
     const [user, setUser] = useState("");
 
 	const email = localStorage.getItem("email");
+    const tr = localStorage.getItem("transportId");
     localStorage.setItem("username", user.firstName);
 	localStorage.setItem("usr", user);
 
@@ -22,6 +21,14 @@ export const Transport = ({}) => {
 
     useEffect(() => {
         GetReservation();
+	}, [])
+
+    useEffect(() => {
+        GetTransport();
+    }, [])
+
+    useEffect(() => {
+		GetUser();
 	}, [])
 
 	const GetReservations = () => {
@@ -37,21 +44,13 @@ export const Transport = ({}) => {
 		  .then(data => setReservation(data))
 		  .then(err => console.error("Error: ", err));
 	}
-
-    useEffect(() => {
-        GetTransport();
-    }, [])
-
+    
     const GetTransport = () => {
         fetch("http://localhost:8080/transport/" + tr)
             .then(res => res.json())
             .then(data => setTransport(data))
             .then(err => console.error("Error: ", err));
     }
-
-	useEffect(() => {
-		GetUser();
-	}, [])
 
 	const GetUser = () => {
 		fetch("http://localhost:8080/users/" + email)
@@ -90,7 +89,8 @@ export const Transport = ({}) => {
     };
 
     const cancleReservation = (id, e) => {
-        const data = fetch("http://localhost:8080/reservationCancle/" + tr + "/" + e).then(res => res.json());
+        fetch("http://localhost:8080/reservationCancle/" + tr + "/" + e).then(res => res.json());
+        fetch("http://localhost:8080/notification/" + tr).then(res => res.json());
         deleteReservation(id);
         window.location.reload(false);
     };
@@ -115,60 +115,32 @@ export const Transport = ({}) => {
             <table>
                 <header><h1>{transport.cityFrom} - {transport.cityTo}</h1></header>
                 <tr>
-                    <td>
-                        <b>Time: </b>
-                    </td>
-                    <td>
-                        <p>{Moment(transport.dateFrom).format('d MMM Y hh:mm')}</p>
-                    </td>
+                    <td><b>Time: </b></td>
+                    <td><p>{Moment(transport.dateFrom).format('d MMM Y hh:mm')}</p></td>
                 </tr>
                 <tr>
-                    <td>
-                        <b>Number of people: </b>
-                    </td>
-                    <td>
-                        <p>{transport.numOfPeople}</p>
-                    </td>
+                    <td><b>Number of people: </b></td>
+                    <td><p>{transport.numOfPeople}</p></td>
                 </tr>
                 <tr>
-                    <td>
-                        <b>Luggage per person: </b>
-                    </td>
-                    <td>
-                        <p>{transport.luggage}</p>
-                    </td>
+                    <td><b>Luggage per person: </b></td>
+                    <td><p>{transport.luggage}</p></td>
                 </tr>
                 <tr>
-                    <td>
-                        <b>Car: </b>
-                    </td>
-                    <td>
-                        <p>{transport.carColor} {transport.carBrand} {transport.carModel}</p>
-                    </td>
+                    <td><b>Car: </b></td>
+                    <td><p>{transport.carColor} {transport.carBrand} {transport.carModel}</p></td>
                 </tr>
                 <tr>
-                    <td>
-                        <b>Registration: </b>
-                    </td>
-                    <td>
-                        <p>{transport.registration}</p>
-                    </td>
+                    <td><b>Registration: </b></td>
+                    <td><p>{transport.registration}</p></td>
                 </tr>
                 <tr>
-                    <td>
-                        <b>Inter stops:</b>
-                    </td>
-                    <td>
-                        <p>{transport.interStop}</p>
-                    </td>
+                    <td><b>Inter stops:</b></td>
+                    <td><p>{transport.interStop}</p></td>
                 </tr>
                 <tr>
-                    <td>
-                    <b>Price: </b>
-                    </td>
-                    <td>
-                    <p>{transport.price}$</p>
-                    </td>
+                    <td><b>Price: </b></td>
+                    <td><p>{transport.price}$</p></td>
                 </tr>
             </table>
             {user.email !== transport.owner ? (

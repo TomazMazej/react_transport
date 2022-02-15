@@ -1,8 +1,12 @@
-import styles from "./styles.module.css";
 import Moment from 'moment';
+import addNotification from 'react-push-notification';
+
+import styles from "./styles.module.css";
 
 export const Transports = ({ transports, onDelete, onEdit, editedTransport, newFrom, newDate, newTo, newPrice, newPeople, newLuggage, newCarBrand, newCarModel, newCarColor, newRegistration, newStop }) => {
     
+    const email = localStorage.getItem("email");
+
     const editTransport = (transport) => {
         editedTransport(transport._id);
 
@@ -21,10 +25,28 @@ export const Transports = ({ transports, onDelete, onEdit, editedTransport, newF
     }
 
     // Preusmeritev na prevoz
-    const onClick = (id) => {
-        localStorage.setItem("transportId", id);
-        window.location.href = `/transport/${id}`;
+    const onClick = (transport) => {
+        if(transport.notification && transport.owner === email){
+            notifications(transport._id);
+            setTimeout(function () {
+                localStorage.setItem("transportId", transport._id);
+                window.location.href = `/transport/${transport._id}`;
+            }, 5000);
+        } else{
+            localStorage.setItem("transportId", transport._id);
+            window.location.href = `/transport/${transport._id}`;
+        }
     }
+
+    const notifications = (tr) => {
+        addNotification({
+            title: 'Warning',
+            message: 'One of the passengers has cancled reservation!',
+            theme: 'red',
+            native: false // when using native, your OS will handle theming.
+        });
+        fetch("http://localhost:8080/notification/" + tr).then(res => res.json());
+    };
     
     return (
         <div>
@@ -32,7 +54,7 @@ export const Transports = ({ transports, onDelete, onEdit, editedTransport, newF
                 {transports.map(transport => (
                     <div key={transport._id}>
                         <div className={styles.todo} value={transport._id} >
-                            <section className={styles.profile_info} onClick={() => onClick(transport._id)}>
+                            <section className={styles.profile_info} onClick={() => onClick(transport)}>
                                 <h2>From</h2>
                                 <h2>To</h2>
                                 <h2>Date</h2>

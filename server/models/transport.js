@@ -51,6 +51,10 @@ const transportSchema = new Schema({
     owner: {
         type: String,
         required: false
+    },
+    notification: {
+        type: Boolean,
+        default: false
     }
 })
 
