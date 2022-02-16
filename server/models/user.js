@@ -10,6 +10,8 @@ const userSchema = new mongoose.Schema({
 	password: { type: String, required: true },
 	offerTransport: { type: Boolean, required: false },
 	searchTransport: { type: Boolean, required: false },
+	rating: { type: Number, default: 0 },
+	numOfRatings: { type: Number, default: 0 }
 });
 
 userSchema.methods.generateAuthToken = function () {

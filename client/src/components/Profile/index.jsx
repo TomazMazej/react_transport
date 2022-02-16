@@ -98,7 +98,7 @@ export const Profile = ({ }) => {
 			transport.carModel = newCarModel;
 			transport.carColor = newCarColor;
 			transport.registration = newRegistration;
-			transport.interStop = newStop;
+			transport.interStop = newStop.value;
 		  }
 	
 		setEditTransportActive(false);
@@ -124,12 +124,12 @@ export const Profile = ({ }) => {
     };
 
     const handleOfferTransports = () => {
-        const data = fetch("http://localhost:8080/checkOfferTransport/" + email).then(res => res.json());
+        fetch("http://localhost:8080/checkOfferTransport/" + email).then(res => res.json());
         window.location.reload(false);
     };
 
     const handleSearchTransports = () => {
-        const data = fetch("http://localhost:8080/checkSearchTransport/" + email).then(res => res.json());
+        fetch("http://localhost:8080/checkSearchTransport/" + email).then(res => res.json());
         window.location.reload(false);
     };
 
@@ -141,103 +141,100 @@ export const Profile = ({ }) => {
                     Logout
                 </button>
             </nav>
-            <div className={styles.profile_logo_container}>
-                <div className={styles.profile_logo}>
-                    {user && user.firstName && (
-                        <div className={styles.profile_logo_text}>{user.firstName[0].concat(user.lastName[0])}</div>
-                    )}
-                </div>
-            </div>
-            <section className={styles.profile_info}>
-                <h2>Full name</h2>
-                <h2>Email</h2>
-                <h2>Offer transports</h2>
-                <h2>Search transports</h2>
+			<div className={styles.content}>
+				<div className={styles.profile_logo_container}>
+					<div className={styles.profile_logo}>
+						{user && user.firstName && (
+							<div className={styles.profile_logo_text}>{user.firstName[0].concat(user.lastName[0])}</div>
+						)}
+					</div>
+				</div>
+				<section className={styles.profile_info}>
+					<h2>Full name</h2>
+					<h2>Rating</h2>
+					<h2>Offer transports</h2>
+					<h2>Search transports</h2>
 
-                <p>{user.firstName} {user.lastName}</p>
-                <p>{user.email}</p>
-                <p><input type="checkbox" checked={user.offerTransport} onChange={handleOfferTransports}/></p>
-                <p><input type="checkbox" checked={user.searchTransport} onChange={handleSearchTransports}/></p>
-            </section>
+					<p>{user.firstName} {user.lastName}</p>
+					<p>{user.rating / user.numOfRatings}</p>
+					<p><input type="checkbox" checked={user.offerTransport} onChange={handleOfferTransports}/></p>
+					<p><input type="checkbox" checked={user.searchTransport} onChange={handleSearchTransports}/></p>
+				</section>
 
-            <h1>My Transports</h1>
-            <Transports transports={myTransports}
-                   onDelete={deleteTransport}
-                   onEdit={setEditTransportActive}
-                   editedTransport={setEditedTransport}
-				   newFrom={setNewFrom}
-				   newDate={setNewDate}
-				   newTo={setNewTo}
-				   newPrice={setNewPrice}
-				   newPeople={setNewPeople}
-				   newLuggage={setNewLuggage}
-				   newCarBrand={setNewCarBrand}
-				   newCarModel={setNewCarModel}
-				   newCarColor={setNewCarColor}
-				   newRegistration={setNewRegistration}
-				   newStop={setNewStop}/>
+				<h1>My Transports</h1>
+				<Transports transports={myTransports}
+					onDelete={deleteTransport}
+					onEdit={setEditTransportActive}
+					editedTransport={setEditedTransport}
+					newFrom={setNewFrom}
+					newDate={setNewDate}
+					newTo={setNewTo}
+					newPrice={setNewPrice}
+					newPeople={setNewPeople}
+					newLuggage={setNewLuggage}
+					newCarBrand={setNewCarBrand}
+					newCarModel={setNewCarModel}
+					newCarColor={setNewCarColor}
+					newRegistration={setNewRegistration}
+					newStop={setNewStop}/>
 
-            {/*Urejanje prevoza*/}
-            {editTransportActive ? (
-                <div className={styles.popup}>
-                  <div className={styles.closePopup} onClick={() => setEditTransportActive(false)}>x</div>
-                  <div className={styles.content} >
-                    <h3>Edit Transsport</h3>
-					<Select className={styles.add_todo_input} options={cities} defaultValue={newFrom} onChange={setNewFrom} value={newFrom} placeholder="From"/>
-					<Select className={styles.add_todo_input} options={cities} defaultValue={newTo} onChange={setNewTo} value={newTo} placeholder="To"/>
-					<DatePicker className={styles.add_todo_input} selected={newDate} onChange={(date) => setNewDate(date)} dateFormat="dd-mmm-yyyy hh:mm"/>
-					<input 
-						type="text" 
-						className={styles.add_todo_input} 
-						onChange={e => setNewPrice(e.target.value)} 
-						value={newPrice} 
-						placeholder="Price"/>
-					<input 
-						type="text" 
-						className={styles.add_todo_input} 
-						onChange={e => setNewPeople(e.target.value)} 
-						value={newPeople} 
-						placeholder="Number of people"/>
-					<input 
-						type="text" 
-						className={styles.add_todo_input} 
-						onChange={e => setNewLuggage(e.target.value)} 
-						value={newLuggage} 
-						placeholder="Luggage per person"/>
-					<input 
-						type="text" 
-						className={styles.add_todo_input} 
-						onChange={e => setNewCarBrand(e.target.value)} 
-						value={newCarBrand} 
-						placeholder="Car brand"/>
-					<input 
-						type="text" 
-						className={styles.add_todo_input} 
-						onChange={e => setNewCarModel(e.target.value)} 
-						value={newCarModel} 
-						placeholder="Car model"/>
-					<input 
-						type="text" 
-						className={styles.add_todo_input} 
-						onChange={e => setNewCarColor(e.target.value)} 
-						value={newCarColor} 
-						placeholder="Car color"/>
-					<input 
-						type="text" 
-						className={styles.add_todo_input} 
-						onChange={e => setNewRegistration(e.target.value)} 
-						value={newRegistration} 
-						placeholder="Registration"/>
-					<input 
-						type="text" 
-						className={styles.add_todo_input} 
-						onChange={e => setNewStop(e.target.value)} 
-						value={newStop} 
-						placeholder="Inner stops"/>
-                    <div className={styles.add_button} onClick={() => editTransport(editedTransport)}>Edit Transport</div>
-                  </div>
-                </div>
-              ) : ''}
+				{/*Urejanje prevoza*/}
+				{editTransportActive ? (
+					<div className={styles.popup}>
+					<div className={styles.closePopup} onClick={() => setEditTransportActive(false)}>x</div>
+					<div className={styles.content} >
+						<h3>Edit Transsport</h3>
+						<Select className={styles.add_todo_input} options={cities} defaultValue={newFrom} onChange={setNewFrom} value={newFrom} placeholder="From"/>
+						<Select className={styles.add_todo_input} options={cities} defaultValue={newTo} onChange={setNewTo} value={newTo} placeholder="To"/>
+						<DatePicker className={styles.add_todo_input} selected={newDate} onChange={(date) => setNewDate(date)} dateFormat="dd-mmm-yyyy hh:mm"/>
+						<input 
+							type="text" 
+							className={styles.add_todo_input} 
+							onChange={e => setNewPrice(e.target.value)} 
+							value={newPrice} 
+							placeholder="Price"/>
+						<input 
+							type="text" 
+							className={styles.add_todo_input} 
+							onChange={e => setNewPeople(e.target.value)} 
+							value={newPeople} 
+							placeholder="Number of people"/>
+						<input 
+							type="text" 
+							className={styles.add_todo_input} 
+							onChange={e => setNewLuggage(e.target.value)} 
+							value={newLuggage} 
+							placeholder="Luggage per person"/>
+						<input 
+							type="text" 
+							className={styles.add_todo_input} 
+							onChange={e => setNewCarBrand(e.target.value)} 
+							value={newCarBrand} 
+							placeholder="Car brand"/>
+						<input 
+							type="text" 
+							className={styles.add_todo_input} 
+							onChange={e => setNewCarModel(e.target.value)} 
+							value={newCarModel} 
+							placeholder="Car model"/>
+						<input 
+							type="text" 
+							className={styles.add_todo_input} 
+							onChange={e => setNewCarColor(e.target.value)} 
+							value={newCarColor} 
+							placeholder="Car color"/>
+						<input 
+							type="text" 
+							className={styles.add_todo_input} 
+							onChange={e => setNewRegistration(e.target.value)} 
+							value={newRegistration} 
+							placeholder="Registration"/>
+						<Select className={styles.add_todo_input} options={cities} defaultValue={newStop} onChange={setNewStop} value={newStop} placeholder="Inner stops" isSearchable/>
+						<div className={styles.add_button} onClick={() => editTransport(editedTransport)}>Edit Transport</div>
+					</div>
+					</div>
+				) : ''}
+			</div>
         </div>
     )
 }

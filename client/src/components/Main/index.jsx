@@ -30,6 +30,7 @@ const Main = () => {
 	const [searchFrom, setSearchFrom] = useState("");
 	const [searchTo, setSearchTo] = useState("");
 	const [searchDate, setSearchDate] = useState(new Date());
+	const [sortType, setSortType] = useState('');
 
 	const cities = [
 		{ value: 'Celje', label: 'Celje' },
@@ -38,6 +39,13 @@ const Main = () => {
 		{ value: 'Koper', label: 'Koper' },
 		{ value: 'Velenje', label: 'Velenje' },
 		{ value: 'Novo mesto', label: 'Novo mesto' },
+	];
+
+	const types = [
+		{ value: 'default', label: 'Default' },
+		{ value: 'price', label: 'Price' },
+		{ value: 'numOfPeople', label: 'Number of people' },
+		{ value: 'luggage', label: 'Luggage per person' }
 	];
 
 	const email = localStorage.getItem("email");
@@ -49,6 +57,16 @@ const Main = () => {
 	useEffect(() => {
 		GetSearchTransports();
 	}, [])
+
+	useEffect(() => {
+		const sortArray = type => {
+		  if(type !== 'default'){
+			const sorted = [...transports].sort((a, b) => b[type] - a[type]);
+			setTransports(sorted);
+		  }
+		};
+		sortArray(sortType.value);
+	}, [sortType]);
 
 	const GetTransports = () => {
 		fetch(API_BASE + "/transports")
@@ -81,7 +99,7 @@ const Main = () => {
 				carModel: newCarModel,
 				carColor: newCarColor,
 				registration: newRegistration,
-				interStop: newStop,
+				interStop: newStop.value,
 				owner: email})
 		}).then(res => res.json());
 
@@ -101,9 +119,6 @@ const Main = () => {
 	}
 
 	const search = () => {
-		console.log(searchFrom.value)
-		console.log(searchTo.value)
-		console.log(searchDate.value)
 		let resultArray;
 		if(searchFrom.value !== undefined){
 			resultArray = searchTransports.filter(transport => transport.cityFrom === searchFrom.value);
@@ -148,79 +163,83 @@ const Main = () => {
 					Logout
 				</button>
 			</nav>
-			<h1>Search transports</h1>
-			<Select className={styles.add_todo_input} options={cities} defaultValue={searchFrom} onChange={setSearchFrom} value={searchFrom} placeholder="From" isSearchable/>
-			<Select className={styles.add_todo_input} options={cities} defaultValue={searchTo} onChange={setSearchTo} value={searchTo} placeholder="To" isSearchable/>
-			<DatePicker className={styles.add_todo_input} selected={searchDate} onChange={(date) => setSearchDate(date)} dateFormat="dd-mm-yyyy"/>
-			<button className={styles.black_btn} onClick={search}>Search</button>
+			<div className={styles.content}>
+				<h1>Search transports</h1>
+				
+				<section className={styles.profile_info}>
+					<h2>From:</h2>
+					<h2>To:</h2>
+					<h2>Date</h2>
+					<h2>Order By</h2>
 
-            <h1>Offered Transports</h1>
-			<Transports transports={transports}/>
-            <div className={styles.addPopup} onClick={() => setAddTransportActive(true)}>+</div>
+					<Select className={styles.add_todo_input} options={cities} defaultValue={searchFrom} onChange={setSearchFrom} value={searchFrom} placeholder="From" isSearchable/>
+					<Select className={styles.add_todo_input} options={cities} defaultValue={searchTo} onChange={setSearchTo} value={searchTo} placeholder="To" isSearchable/>
+					<DatePicker className={styles.add_todo_input} selected={searchDate} onChange={(date) => setSearchDate(date)} dateFormat="dd-mm-yyyy"/>
+					<Select className={styles.add_todo_input} options={types} defaultValue={sortType} onChange={setSortType} value={sortType} placeholder="Order by" />
+				</section>
+				<button className={styles.black_btn} onClick={search}>Search</button>
 
-            {/*Dodajanje prevoza*/}
-            {addTransportActive ? (
-              <div className={styles.popup}>
-                <div className={styles.closePopup} onClick={() => setAddTransportActive(false)}>x</div>
-                <div className={styles.content}>
-                	<h3>Add Transport</h3>
-					<Select className={styles.add_todo_input} options={cities} defaultValue={newFrom} onChange={setNewFrom} value={newFrom} placeholder="From" isSearchable/>
-					<Select className={styles.add_todo_input} options={cities} defaultValue={newTo} onChange={setNewTo} value={newTo} placeholder="To" isSearchable/>
-					<DatePicker className={styles.add_todo_input} selected={newDate} onChange={(date) => setNewDate(date)} dateFormat="dd-mm-yyyy hh:mm"/>
-					<input 
-						type="text" 
-						className={styles.add_todo_input} 
-						onChange={e => setNewPrice(e.target.value)} 
-						value={newPrice} 
-						placeholder="Price"/>
-					<input 
-						type="text" 
-						className={styles.add_todo_input} 
-						onChange={e => setNewPeople(e.target.value)} 
-						value={newPeople} 
-						placeholder="Number of people"/>
-					<input 
-						type="text" 
-						className={styles.add_todo_input} 
-						onChange={e => setNewLuggage(e.target.value)} 
-						value={newLuggage} 
-						placeholder="Luggage per person"/>
-					<input 
-						type="text" 
-						className={styles.add_todo_input} 
-						onChange={e => setNewCarBrand(e.target.value)} 
-						value={newCarBrand} 
-						placeholder="Car brand"/>
-					<input 
-						type="text" 
-						className={styles.add_todo_input} 
-						onChange={e => setNewCarModel(e.target.value)} 
-						value={newCarModel} 
-						placeholder="Car model"/>
-					<input 
-						type="text" 
-						className={styles.add_todo_input} 
-						onChange={e => setNewCarColor(e.target.value)} 
-						value={newCarColor} 
-						placeholder="Car color"/>
-					<input 
-						type="text" 
-						className={styles.add_todo_input} 
-						onChange={e => setNewRegistration(e.target.value)} 
-						value={newRegistration} 
-						placeholder="Registration"/>
-					<input 
-						type="text" 
-						className={styles.add_todo_input} 
-						onChange={e => setNewStop(e.target.value)} 
-						value={newStop} 
-						placeholder="Inner stops"/>
+				<h1>Offered Transports</h1>
+				<Transports transports={transports}/>
+				<div className={styles.addPopup} onClick={() => setAddTransportActive(true)}>+</div>
 
-                  <div className={styles.add_button} onClick={addTransport}>Add Transport</div>
-                  </div>
-              </div>
-            ) : ''}   
-
+				{/*Dodajanje prevoza*/}
+				{addTransportActive ? (
+				<div className={styles.popup}>
+					<div className={styles.closePopup} onClick={() => setAddTransportActive(false)}>x</div>
+					<div className={styles.content}>
+						<h3>Add Transport</h3>
+						<Select className={styles.add_todo_input} options={cities} defaultValue={newFrom} onChange={setNewFrom} value={newFrom} placeholder="From" isSearchable/>
+						<Select className={styles.add_todo_input} options={cities} defaultValue={newTo} onChange={setNewTo} value={newTo} placeholder="To" isSearchable/>
+						<DatePicker className={styles.add_todo_input} selected={newDate} onChange={(date) => setNewDate(date)} dateFormat="dd-mm-yyyy hh:mm"/>
+						<input 
+							type="text" 
+							className={styles.add_todo_input} 
+							onChange={e => setNewPrice(e.target.value)} 
+							value={newPrice} 
+							placeholder="Price"/>
+						<input 
+							type="text" 
+							className={styles.add_todo_input} 
+							onChange={e => setNewPeople(e.target.value)} 
+							value={newPeople} 
+							placeholder="Number of people"/>
+						<input 
+							type="text" 
+							className={styles.add_todo_input} 
+							onChange={e => setNewLuggage(e.target.value)} 
+							value={newLuggage} 
+							placeholder="Luggage per person"/>
+						<input 
+							type="text" 
+							className={styles.add_todo_input} 
+							onChange={e => setNewCarBrand(e.target.value)} 
+							value={newCarBrand} 
+							placeholder="Car brand"/>
+						<input 
+							type="text" 
+							className={styles.add_todo_input} 
+							onChange={e => setNewCarModel(e.target.value)} 
+							value={newCarModel} 
+							placeholder="Car model"/>
+						<input 
+							type="text" 
+							className={styles.add_todo_input} 
+							onChange={e => setNewCarColor(e.target.value)} 
+							value={newCarColor} 
+							placeholder="Car color"/>
+						<input 
+							type="text" 
+							className={styles.add_todo_input} 
+							onChange={e => setNewRegistration(e.target.value)} 
+							value={newRegistration} 
+							placeholder="Registration"/>
+						<Select className={styles.add_todo_input} options={cities} defaultValue={newStop} onChange={setNewStop} value={newStop} placeholder="Inner stops" isSearchable/>
+					<div className={styles.add_button} onClick={addTransport}>Add Transport</div>
+					</div>
+				</div>
+				) : ''}   
+			</div>
 		</div>
 	);
 };

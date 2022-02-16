@@ -2,7 +2,7 @@ GET http://localhost:8080/transports
 
 ###
 
-GET http://localhost:8080/userTransports/tomaz.mazej@gmail.com
+GET http://localhost:8080/users/tomaz.mazej@gmail.com
 
 ###
 

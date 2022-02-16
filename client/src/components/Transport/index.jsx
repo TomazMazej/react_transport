@@ -1,7 +1,11 @@
 import { useState, useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faStar } from '@fortawesome/free-solid-svg-icons'
 import Moment from 'moment';
+import Select from 'react-select';
 
 import styles from "./styles.module.css";
+import 'font-awesome/css/font-awesome.min.css';
 
 export const Transport = ({}) => {
 
@@ -9,11 +13,22 @@ export const Transport = ({}) => {
     const [reservations, setReservations] = useState([]);
     const [reservation, setReservation] = useState("");
     const [user, setUser] = useState("");
+    const [rateDialogActive, setRateDialogActive] = useState(false);
+    const [ratedPassenger, setRatedPassenger] = useState("");
+    const [rating, setRating] = useState("");
 
 	const email = localStorage.getItem("email");
     const tr = localStorage.getItem("transportId");
     localStorage.setItem("username", user.firstName);
 	localStorage.setItem("usr", user);
+
+    const ratings = [
+		{ value: 1, label: '1' },
+		{ value: 2, label: '2' },
+		{ value: 3, label: '3' },
+		{ value: 4, label: '4' },
+		{ value: 5, label: '5' }
+	];
 
     useEffect(() => {
 		GetReservations();
@@ -108,6 +123,16 @@ export const Transport = ({}) => {
         window.location.reload(false);
     };
 
+    const openRateDialog = (e) => {
+        setRateDialogActive(true);
+        setRatedPassenger(e);
+    };
+
+    const rate = () => {
+        fetch("http://localhost:8080/rating/" + ratedPassenger + "/" + rating.value).then(res => res.json());
+        window.location.reload(false);
+    };
+
     return (
         <div>
             <nav className={styles.navbar}>
@@ -117,71 +142,96 @@ export const Transport = ({}) => {
 					Logout
 				</button>
 			</nav>
-            <table>
-                <header><h1>{transport.cityFrom} - {transport.cityTo}</h1></header>
-                <tr>
-                    <td><b>Time: </b></td>
-                    <td><p>{Moment(transport.dateFrom).format('d MMM Y hh:mm')}</p></td>
-                </tr>
-                <tr>
-                    <td><b>Number of people: </b></td>
-                    <td><p>{transport.numOfPeople}</p></td>
-                </tr>
-                <tr>
-                    <td><b>Luggage per person: </b></td>
-                    <td><p>{transport.luggage}</p></td>
-                </tr>
-                <tr>
-                    <td><b>Car: </b></td>
-                    <td><p>{transport.carColor} {transport.carBrand} {transport.carModel}</p></td>
-                </tr>
-                <tr>
-                    <td><b>Registration: </b></td>
-                    <td><p>{transport.registration}</p></td>
-                </tr>
-                <tr>
-                    <td><b>Inter stops:</b></td>
-                    <td><p>{transport.interStop}</p></td>
-                </tr>
-                <tr>
-                    <td><b>Price: </b></td>
-                    <td><p>{transport.price}$</p></td>
-                </tr>
-            </table>
-            {user.email !== transport.owner ? (
-                <div>
-                    {reservation !== null && reservation.status !== "cancled" ? (
-                        <div>
-                            {reservation.status === "accepted" ? (
-                                <button className={styles.red_btn} onClick={() => cancleReservation(reservation._id, email)}>Cancle Reservation</button>
-                            ) :
-                                <p>Reservation request pending</p>
-                            }
-                        </div>
-                    ) :
-                        <button className={styles.green_btn} onClick={handleReservation}>Reservation</button>  
-                    }
-                </div>
-            ) : 
-                <div>
-                    <h2>Reservations</h2>
-                    {reservations.map(r => (
-                    <div key={r._id}>
-                        <div className={styles.todo} value={r._id} >
-                            <div className={styles.text}>{r.name} </div>
-                            {r.status === "pending" ? (
-                                <div>
-                                    <button className={styles.accept_btn} onClick={() => acceptReservation(r._id, r.email)}>Accept</button>
-                                    <button className={styles.decline_btn} onClick={() => declineReservation(r._id)}>Decline</button>
+            <div className={styles.content}>
+                <table>
+                    <header><h1>{transport.cityFrom} - {transport.cityTo}</h1></header>
+                    <tr>
+                        <td><b>Time: </b></td>
+                        <td><p>{Moment(transport.dateFrom).format('d MMM Y hh:mm')}</p></td>
+                    </tr>
+                    <tr>
+                        <td><b>Number of people: </b></td>
+                        <td><p>{transport.numOfPeople}</p></td>
+                    </tr>
+                    <tr>
+                        <td><b>Luggage per person: </b></td>
+                        <td><p>{transport.luggage}</p></td>
+                    </tr>
+                    <tr>
+                        <td><b>Car: </b></td>
+                        <td><p>{transport.carColor} {transport.carBrand} {transport.carModel}</p></td>
+                    </tr>
+                    <tr>
+                        <td><b>Registration: </b></td>
+                        <td><p>{transport.registration}</p></td>
+                    </tr>
+                    <tr>
+                        <td><b>Inter stops:</b></td>
+                        <td><p>{transport.interStop}</p></td>
+                    </tr>
+                    <tr>
+                        <td><b>Price: </b></td>
+                        <td><p>{transport.price}$</p></td>
+                    </tr>
+                </table>
+                {user.email !== transport.owner ? (
+                    <div>
+                        {reservation !== null && reservation.status !== "cancled" ? (
+                            <div>
+                                {reservation.status === "accepted" ? (
+                                    <div>
+                                        <button className={styles.red_btn} onClick={() => cancleReservation(reservation._id, email)}>Cancle Reservation</button>
+                                        <FontAwesomeIcon icon={faStar} size="lg" color="yellow" onClick={() => openRateDialog(transport.owner)}/>
+                                    </div>
+                                ) :
+                                    <b>Reservation request pending</b>
+                                }
                             </div>
-                            ) : 
-                            <input type="checkbox" checked={r.pickup} onChange={() => pickUp(r._id)}/>
-                            }
-                        </div>
+                        ) :
+                            <button className={styles.green_btn} onClick={handleReservation}>Reservation</button>  
+                        }
                     </div>
-                ))}
-                </div>
-            }
+                ) : 
+                    <div>
+                        <h2>Reservations</h2>
+                        {reservations.size > 0 ? (
+                            <div>
+                                {reservations.map(r => (
+                                <div key={r._id}>
+                                    <div className={styles.todo} value={r._id} >
+                                        <div className={styles.text}>{r.name} </div>
+                                        {r.status === "pending" ? (
+                                            <div>
+                                                <button className={styles.accept_btn} onClick={() => acceptReservation(r._id, r.email)}>Accept</button>
+                                                <button className={styles.decline_btn} onClick={() => declineReservation(r._id)}>Decline</button>
+                                        </div>
+                                        ) : 
+                                        <div>
+                                            <input type="checkbox" checked={r.pickup} onChange={() => pickUp(r._id)}/>
+                                            <FontAwesomeIcon icon={faStar} size="lg" color="yellow" onClick={() => openRateDialog(r.email)}/>
+                                        </div>
+                                        }
+                                    </div>
+                                </div>
+                                ))}
+                            </div>
+                        ) :
+                            <b>There are currently no reservations.</b>
+                        }
+                    </div>
+                }
+            </div>
+            	{/*Ocenjevanje prevoza*/}
+				{rateDialogActive ? (
+					<div className={styles.popup}>
+                        <div className={styles.closePopup} onClick={() => setRateDialogActive(false)}>x</div>
+                        <div className={styles.content} >
+                            <h3>Rate transport provider</h3>
+                            <Select className={styles.add_todo_input} options={ratings} defaultValue={rating} onChange={setRating} value={rating} placeholder="Rating"/>
+                            <div className={styles.add_button} onClick={() => rate()}>Rate</div>
+                        </div>
+					</div>
+				) : ''}
         </div>
     )
 }

@@ -178,5 +178,15 @@ app.get('/notification/:tr', async (req, res) => {
     res.json(transport)
 })
 
+// Ratings
+app.get('/rating/:e/:r', async (req, res) => {
+    const user = await Users.User.findOne({ email: req.params.e });
+    user.rating = Number(user.rating) + Number(req.params.r); 
+    user.numOfRatings = user.numOfRatings + 1; 
+    user.save();
+
+    res.json(user)
+})
+
 const port = process.env.PORT || 8080;
 app.listen(port, console.log(`Listening on port ${port}...`));

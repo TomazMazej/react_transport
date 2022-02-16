@@ -134,3 +134,8 @@ a:visited {
     cursor: pointer;
     color: white;
 }
+
+.content {
+    margin-left: 20px;
+    margin-right: 20px;
+}
