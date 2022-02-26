@@ -29,7 +29,7 @@ const Main = () => {
 	const [newStop, setNewStop] = useState("");
 	const [searchFrom, setSearchFrom] = useState("");
 	const [searchTo, setSearchTo] = useState("");
-	const [searchDate, setSearchDate] = useState(new Date());
+	const [searchDate, setSearchDate] = useState(null);
 	const [sortType, setSortType] = useState('');
 
 	const cities = [
@@ -126,9 +126,9 @@ const Main = () => {
 		if(searchTo.value !== undefined){
 			resultArray = searchTransports.filter(transport => transport.cityTo === searchTo.value);
 		}
-		/*if(searchDate !== undefined){
-			resultArray = searchTransports.filter(transport => transport.dateFrom === searchDate);
-		}*/
+		if(searchDate !== null){
+			resultArray = searchTransports.filter(transport => new Date(transport.dateFrom).getDay() === searchDate.getDay()).filter(transport => new Date(transport.dateFrom).getMonth() === searchDate.getMonth()).filter(transport => new Date(transport.dateFrom).getFullYear() === searchDate.getFullYear());	
+		}
 		setTransports(resultArray);
 	};
 
@@ -164,20 +164,22 @@ const Main = () => {
 				</button>
 			</nav>
 			<div className={styles.content}>
-				<h1>Search transports</h1>
 				
-				<section className={styles.profile_info}>
-					<h2>From:</h2>
-					<h2>To:</h2>
-					<h2>Date</h2>
-					<h2>Order By</h2>
+				<h1>Search transports</h1>
+				<div class={styles.card}>	
+					<section className={styles.profile_info}>
+						<h2>From:</h2>
+						<h2>To:</h2>
+						<h2>Date:</h2>
+						<h2>Order By:</h2>
 
-					<Select className={styles.add_todo_input} options={cities} defaultValue={searchFrom} onChange={setSearchFrom} value={searchFrom} placeholder="From" isSearchable/>
-					<Select className={styles.add_todo_input} options={cities} defaultValue={searchTo} onChange={setSearchTo} value={searchTo} placeholder="To" isSearchable/>
-					<DatePicker className={styles.add_todo_input} selected={searchDate} onChange={(date) => setSearchDate(date)} dateFormat="dd-mm-yyyy"/>
-					<Select className={styles.add_todo_input} options={types} defaultValue={sortType} onChange={setSortType} value={sortType} placeholder="Order by" />
-				</section>
-				<button className={styles.black_btn} onClick={search}>Search</button>
+						<Select className={styles.add_todo_input} options={cities} defaultValue={searchFrom} onChange={setSearchFrom} value={searchFrom} placeholder="From" isSearchable/>
+						<Select className={styles.add_todo_input} options={cities} defaultValue={searchTo} onChange={setSearchTo} value={searchTo} placeholder="To" isSearchable/>
+						<DatePicker className={styles.add_todo_input} selected={searchDate} onChange={(date) => setSearchDate(date)} dateFormat="d MMM Y"/>
+						<Select className={styles.add_todo_input} options={types} defaultValue={sortType} onChange={setSortType} value={sortType} placeholder="Order by" />
+					</section>
+					<button className={styles.black_btn} onClick={search}>Search</button>
+				</div>
 
 				<h1>Offered Transports</h1>
 				<Transports transports={transports}/>
@@ -188,10 +190,10 @@ const Main = () => {
 				<div className={styles.popup}>
 					<div className={styles.closePopup} onClick={() => setAddTransportActive(false)}>x</div>
 					<div className={styles.content}>
-						<h3>Add Transport</h3>
+						<h2>Add Transport</h2>
 						<Select className={styles.add_todo_input} options={cities} defaultValue={newFrom} onChange={setNewFrom} value={newFrom} placeholder="From" isSearchable/>
 						<Select className={styles.add_todo_input} options={cities} defaultValue={newTo} onChange={setNewTo} value={newTo} placeholder="To" isSearchable/>
-						<DatePicker className={styles.add_todo_input} selected={newDate} onChange={(date) => setNewDate(date)} dateFormat="dd-mm-yyyy hh:mm"/>
+						<DatePicker className={styles.add_todo_input} selected={newDate} onChange={(date) => setNewDate(date)} dateFormat="d MMM Y hh:mm"/>
 						<input 
 							type="text" 
 							className={styles.add_todo_input} 

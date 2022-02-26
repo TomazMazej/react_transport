@@ -10,7 +10,7 @@ const transportSchema = new Schema({
     dateFrom: {
         type: Date,
         default: Date.now,
-        format: "dd-mmm-yyyy hh:mm"
+        format: "d MMM Y hh:mm"
     },
     cityTo: {
         type: String,

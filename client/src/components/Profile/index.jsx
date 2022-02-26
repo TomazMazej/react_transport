@@ -183,7 +183,7 @@ export const Profile = ({ }) => {
 					<div className={styles.popup}>
 					<div className={styles.closePopup} onClick={() => setEditTransportActive(false)}>x</div>
 					<div className={styles.content} >
-						<h3>Edit Transsport</h3>
+						<h2>Edit Transsport</h2>
 						<Select className={styles.add_todo_input} options={cities} defaultValue={newFrom} onChange={setNewFrom} value={newFrom} placeholder="From"/>
 						<Select className={styles.add_todo_input} options={cities} defaultValue={newTo} onChange={setNewTo} value={newTo} placeholder="To"/>
 						<DatePicker className={styles.add_todo_input} selected={newDate} onChange={(date) => setNewDate(date)} dateFormat="dd-mmm-yyyy hh:mm"/>

@@ -80,7 +80,7 @@ export const Transport = ({}) => {
     };
 
     const handleReservation = () => {
-        const data = fetch("http://localhost:8080/reservation/new/", {
+        fetch("http://localhost:8080/reservation/new/", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json"
@@ -94,7 +94,7 @@ export const Transport = ({}) => {
     };
 
     const acceptReservation = (id, e) => {
-        const data = fetch("http://localhost:8080/reservationAccept/" + tr + "/" + e).then(res => res.json());
+        fetch("http://localhost:8080/reservationAccept/" + tr + "/" + e).then(res => res.json());
         window.location.reload(false);
     };
 
@@ -119,7 +119,7 @@ export const Transport = ({}) => {
 	}
 
     const pickUp = (id) => {
-        const data = fetch("http://localhost:8080/pickUp/" + id).then(res => res.json());
+        fetch("http://localhost:8080/pickUp/" + id).then(res => res.json());
         window.location.reload(false);
     };
 
@@ -143,37 +143,39 @@ export const Transport = ({}) => {
 				</button>
 			</nav>
             <div className={styles.content}>
-                <table>
-                    <header><h1>{transport.cityFrom} - {transport.cityTo}</h1></header>
-                    <tr>
-                        <td><b>Time: </b></td>
-                        <td><p>{Moment(transport.dateFrom).format('d MMM Y hh:mm')}</p></td>
-                    </tr>
-                    <tr>
-                        <td><b>Number of people: </b></td>
-                        <td><p>{transport.numOfPeople}</p></td>
-                    </tr>
-                    <tr>
-                        <td><b>Luggage per person: </b></td>
-                        <td><p>{transport.luggage}</p></td>
-                    </tr>
-                    <tr>
-                        <td><b>Car: </b></td>
-                        <td><p>{transport.carColor} {transport.carBrand} {transport.carModel}</p></td>
-                    </tr>
-                    <tr>
-                        <td><b>Registration: </b></td>
-                        <td><p>{transport.registration}</p></td>
-                    </tr>
-                    <tr>
-                        <td><b>Inter stops:</b></td>
-                        <td><p>{transport.interStop}</p></td>
-                    </tr>
-                    <tr>
-                        <td><b>Price: </b></td>
-                        <td><p>{transport.price}$</p></td>
-                    </tr>
-                </table>
+                <h1>{transport.cityFrom} - {transport.cityTo}</h1>
+                <div className={styles.card}>
+                    <table> 
+                        <tr>
+                            <td><b>Time: </b></td>
+                            <td><p>{Moment(transport.dateFrom).format("DD/MM/YYYY HH:MM")}</p></td>
+                        </tr>
+                        <tr>
+                            <td><b>Number of people: </b></td>
+                            <td><p>{transport.numOfPeople}</p></td>
+                        </tr>
+                        <tr>
+                            <td><b>Luggage per person: </b></td>
+                            <td><p>{transport.luggage}</p></td>
+                        </tr>
+                        <tr>
+                            <td><b>Car: </b></td>
+                            <td><p>{transport.carColor} {transport.carBrand} {transport.carModel}</p></td>
+                        </tr>
+                        <tr>
+                            <td><b>Registration: </b></td>
+                            <td><p>{transport.registration}</p></td>
+                        </tr>
+                        <tr>
+                            <td><b>Inter stops:</b></td>
+                            <td><p>{transport.interStop}</p></td>
+                        </tr>
+                        <tr>
+                            <td><b>Price: </b></td>
+                            <td><p>{transport.price}$</p></td>
+                        </tr>
+                    </table>
+                </div>
                 {user.email !== transport.owner ? (
                     <div>
                         {reservation !== null && reservation.status !== "cancled" ? (
@@ -194,7 +196,7 @@ export const Transport = ({}) => {
                 ) : 
                     <div>
                         <h2>Reservations</h2>
-                        {reservations.size > 0 ? (
+                        {reservations.length > 0 ? (
                             <div>
                                 {reservations.map(r => (
                                 <div key={r._id}>
@@ -226,7 +228,7 @@ export const Transport = ({}) => {
 					<div className={styles.popup}>
                         <div className={styles.closePopup} onClick={() => setRateDialogActive(false)}>x</div>
                         <div className={styles.content} >
-                            <h3>Rate transport provider</h3>
+                            <h2>Rate transport provider</h2>
                             <Select className={styles.add_todo_input} options={ratings} defaultValue={rating} onChange={setRating} value={rating} placeholder="Rating"/>
                             <div className={styles.add_button} onClick={() => rate()}>Rate</div>
                         </div>

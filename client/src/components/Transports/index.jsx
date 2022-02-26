@@ -62,7 +62,7 @@ export const Transports = ({ transports, onDelete, onEdit, editedTransport, newF
 
                                 <div className={styles.text}>{transport.cityFrom} </div>
                                 <div className={styles.text}>{transport.cityTo}</div>
-                                <div className={styles.text}>{Moment(transport.dateFrom).format('d MMM Y hh:mm')}</div>
+                                <div className={styles.text}>{Moment(transport.dateFrom).format("DD/MM/YYYY HH:MM")}</div>
                                 <div className={styles.text}>{transport.price}$</div>
                             </section>
                             {onDelete ? (
