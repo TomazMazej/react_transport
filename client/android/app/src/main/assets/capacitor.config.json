@@ -1,0 +1,8 @@
+{
+	"appId": "io.ionic.react_transport",
+	"appName": "react_transport",
+	"bundledWebRuntime": false,
+	"npmClient": "npm",
+	"webDir": "build",
+	"cordova": {}
+}

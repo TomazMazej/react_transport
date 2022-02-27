@@ -1,0 +1,7 @@
+{
+    "name": "react_transport",
+    "integrations": {
+      "capacitor": {}
+    },
+    "type": "react"
+  }

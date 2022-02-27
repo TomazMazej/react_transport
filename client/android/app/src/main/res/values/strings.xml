@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">react_transport</string>
+    <string name="title_activity_main">react_transport</string>
+    <string name="package_name">io.ionic.react_transport</string>
+    <string name="custom_url_scheme">io.ionic.react_transport</string>
+</resources>
